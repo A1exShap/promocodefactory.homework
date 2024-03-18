@@ -11,14 +11,14 @@ namespace Otus.Teaching.PromoCodeFactory.DataAccess.Repositories
         : IRepository<T>
         where T: BaseEntity
     {
-        protected IEnumerable<T> Data { get; set; }
+        protected ICollection<T> Data { get; set; }
 
-        public InMemoryRepository(IEnumerable<T> data)
+        public InMemoryRepository(ICollection<T> data)
         {
             Data = data;
         }
         
-        public Task<IEnumerable<T>> GetAllAsync()
+        public Task<ICollection<T>> GetAllAsync()
         {
             return Task.FromResult(Data);
         }
@@ -26,6 +26,39 @@ namespace Otus.Teaching.PromoCodeFactory.DataAccess.Repositories
         public Task<T> GetByIdAsync(Guid id)
         {
             return Task.FromResult(Data.FirstOrDefault(x => x.Id == id));
+        }
+
+        public Task<T> CreateAsync(T entity)
+        {
+            entity.Id = Guid.NewGuid();
+
+            Data.Add(entity);
+            return Task.FromResult(entity);
+        }
+
+        public Task<bool> UpdateAsync(Guid id, T entity)
+        {
+            var existingEntity = Data.FirstOrDefault(x => x.Id == id);
+            
+            if (existingEntity is null) 
+                return Task.FromResult(false);
+
+            entity.Id = id;
+
+            Data.Remove(existingEntity);
+            Data.Add(entity);
+
+            return Task.FromResult(true);
+        }
+
+        public Task<bool> DeleteAsync(Guid id)
+        {
+            var existingEntity = Data.FirstOrDefault(x => x.Id == id);
+
+            if (existingEntity is null)
+                return Task.FromResult(false);
+
+            return Task.FromResult(Data.Remove(existingEntity));
         }
     }
 }

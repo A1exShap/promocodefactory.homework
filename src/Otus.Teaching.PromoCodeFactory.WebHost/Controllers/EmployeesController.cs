@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Otus.Teaching.PromoCodeFactory.Core.Abstractions.Repositories;
+using Otus.Teaching.PromoCodeFactory.Core.Domain.Administration;
+using Otus.Teaching.PromoCodeFactory.WebHost.Extensions;
+using Otus.Teaching.PromoCodeFactory.WebHost.Models.RequestModels;
+using Otus.Teaching.PromoCodeFactory.WebHost.Models.ResponseModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Otus.Teaching.PromoCodeFactory.Core.Abstractions.Repositories;
-using Otus.Teaching.PromoCodeFactory.Core.Domain.Administration;
-using Otus.Teaching.PromoCodeFactory.WebHost.Models;
 
 namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
 {
@@ -71,5 +73,20 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
 
             return employeeModel;
         }
+
+        [HttpPost]
+        public async Task<ActionResult<EmployeeResponse>> CreateEmployeeAsync(EmployeeRequest model)
+        {
+            var createdEmployee = await _employeeRepository.CreateAsync(model.ToEmployee());
+            return createdEmployee.ToEmployeeResponse();
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<bool>> UpdateEmployeeAsync(Guid id, EmployeeRequest model)
+            => await _employeeRepository.UpdateAsync(id, model.ToEmployee());
+
+        [HttpDelete("{id:guid}")]
+        public async Task<ActionResult<bool>> DeleteEmployeeAsync(Guid id)
+            => await _employeeRepository.DeleteAsync(id);
     }
 }

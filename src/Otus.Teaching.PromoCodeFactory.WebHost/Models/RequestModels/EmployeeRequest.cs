@@ -1,12 +1,10 @@
-﻿using System;
+﻿using Otus.Teaching.PromoCodeFactory.WebHost.Models.ResponseModels;
 using System.Collections.Generic;
-using Otus.Teaching.PromoCodeFactory.Core.Domain.Administration;
 
-namespace Otus.Teaching.PromoCodeFactory.WebHost.Models
+namespace Otus.Teaching.PromoCodeFactory.WebHost.Models.RequestModels
 {
-    public class EmployeeResponse
+    public class EmployeeRequest
     {
-        public Guid Id { get; set; }
         public string FullName { get; set; }
 
         public string Email { get; set; }
